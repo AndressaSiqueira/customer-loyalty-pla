@@ -283,6 +283,74 @@ The application follows a modern design system with:
 - **Data Platform Colors**: Distinct colors for different architectural layers
 - **Semantic Colors**: Success, warning, error, and info states
 
+## 🎨 Theming
+
+The application supports **Light** and **Dark** modes with automatic OS preference detection.
+
+### Features
+- **Instant Theme Switching**: Toggle between light and dark modes without page reload
+- **Persistent Preference**: Your theme choice is saved in `localStorage` (key: `appTheme`)
+- **OS Integration**: Automatically detects and respects system color scheme preference on first visit
+- **WCAG AA Compliant**: All color combinations meet accessibility contrast requirements (≥4.5:1 for body text, ≥3:1 for large text)
+
+### Theme Toggle
+The theme toggle button is located in the header. Click to switch between:
+- 🌞 **Light Mode**: Clean, bright interface optimized for daylight viewing
+- 🌙 **Dark Mode**: Reduced eye strain for low-light environments
+
+### Theme Tokens
+
+All components use semantic CSS variables for consistent theming:
+
+#### Core Colors
+- `--background`: Main background color
+- `--foreground`: Primary text color
+- `--card`: Card background color
+- `--card-foreground`: Card text color
+- `--popover`: Popover/dropdown background
+- `--popover-foreground`: Popover/dropdown text
+- `--primary`: Primary action color
+- `--primary-foreground`: Primary action text
+- `--secondary`: Secondary element background
+- `--secondary-foreground`: Secondary element text
+- `--muted`: Muted background color
+- `--muted-foreground`: Muted text color
+- `--accent`: Accent color for highlights
+- `--accent-foreground`: Accent text color
+- `--destructive`: Error/destructive action color
+- `--border`: Border color
+- `--input`: Input field border color
+- `--ring`: Focus ring color
+
+#### Architecture-Specific Colors
+- `--microservices`: Microservices layer color
+- `--ai-agents`: AI agents layer color
+- `--data-platform`: Data platform layer color
+- `--security`: Security layer color
+- `--devops`: DevOps layer color
+
+#### Usage Example
+```css
+.my-component {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+```
+
+Or with Tailwind CSS:
+```jsx
+<div className="bg-background text-foreground border border-border">
+  Content
+</div>
+```
+
+### Implementation Details
+- **Framework**: Uses `next-themes` for React theme management
+- **Storage**: Themes persist in localStorage with key `appTheme`
+- **Default**: Falls back to system preference (`prefers-color-scheme`)
+- **Tailwind Integration**: Dark mode uses class-based strategy with `.dark` class
+
 ## 🌐 Browser Support
 
 - Chrome (latest)
