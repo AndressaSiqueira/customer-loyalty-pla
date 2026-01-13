@@ -3,13 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { Sparkle, Lightbulb, Trash } from '@phosphor-icons/react'
+import { Sparkle, Lightbulb, Trash, UserCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import DashboardOverview from '@/components/DashboardOverview'
 
 declare const spark: Window['spark']
 
-type Agent = 'campaign-designer' | 'support-operations'
+type Agent = 'campaign-designer' | 'support-operations' | 'store-associate-coach'
 
 interface Message {
   id: string
@@ -41,6 +41,18 @@ const agentConfig = {
       'Show me all critical errors in the loyalty service from the past hour',
       'Is the current API latency spike within normal range?',
       'What are the top 3 support issues reported today?'
+    ]
+  },
+  'store-associate-coach': {
+    name: 'Store Associate Coach',
+    persona: 'Store Associate',
+    color: 'var(--data-platform)',
+    description: 'Real-time customer insights and recommendations for front-line workers',
+    samplePrompts: [
+      'Customer Emily Chen just checked in, what should I know about her?',
+      'What offers should I recommend for customer ID 789?',
+      'Guide me through redeeming points for this customer',
+      'What training resources help with high-value customer interactions?'
     ]
   }
 }
@@ -126,7 +138,7 @@ Provide a helpful, specific response that demonstrates how you would help with t
       {/* Dashboard Overview */}
       <DashboardOverview onRecommendationClick={handleRecommendationClick} />
 
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
+      <div className="grid md:grid-cols-3 gap-4 mb-8">
         <Card
           className={`cursor-pointer transition-all duration-200 border-2 ${
             selectedAgent === 'campaign-designer' 
@@ -177,6 +189,33 @@ Provide a helpful, specific response that demonstrates how you would help with t
             <CardTitle className="text-base">{agentConfig['support-operations'].name}</CardTitle>
             <CardDescription className="text-xs">
               {agentConfig['support-operations'].description}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card
+          className={`cursor-pointer transition-all duration-200 border-2 ${
+            selectedAgent === 'store-associate-coach' 
+              ? 'border-[var(--data-platform)] bg-[var(--data-platform)]/10 shadow-lg' 
+              : 'border-border hover:border-[var(--data-platform)]/50'
+          }`}
+          onClick={() => setSelectedAgent('store-associate-coach')}
+        >
+          <CardHeader>
+            <div className="flex items-center justify-between mb-2">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: agentConfig['store-associate-coach'].color }}
+              >
+                <UserCircle className="w-5 h-5 text-white" weight="duotone" />
+              </div>
+              <Badge variant={selectedAgent === 'store-associate-coach' ? 'default' : 'outline'}>
+                {agentConfig['store-associate-coach'].persona}
+              </Badge>
+            </div>
+            <CardTitle className="text-base">{agentConfig['store-associate-coach'].name}</CardTitle>
+            <CardDescription className="text-xs">
+              {agentConfig['store-associate-coach'].description}
             </CardDescription>
           </CardHeader>
         </Card>
