@@ -35,6 +35,13 @@ The Customer Loyalty Platform is designed to demonstrate how to modernize legacy
 - **TypeScript** - Type-safe development
 - **Vite** - Fast build tool and development server
 
+### Backend API (NEW)
+- **Node.js & Express** - RESTful API server
+- **TypeScript** - Type-safe backend development
+- **PostgreSQL / Azure SQL** - Database for real-time KPI data
+- **Docker** - Containerization for deployment
+- **Kubernetes** - Orchestration for AKS deployment
+
 ### UI Components & Styling
 - **Radix UI** - Accessible component primitives
 - **Tailwind CSS 4** - Utility-first CSS framework
@@ -61,8 +68,11 @@ The Customer Loyalty Platform is designed to demonstrate how to modernize legacy
 ### Prerequisites
 - Node.js (v18 or higher recommended)
 - npm or yarn package manager
+- PostgreSQL or Azure SQL Database (for backend API)
+- Docker (optional, for containerized deployment)
+- kubectl and Azure CLI (optional, for AKS deployment)
 
-### Setup
+### Frontend Setup
 
 1. **Clone the repository**
    ```bash
@@ -72,16 +82,63 @@ The Customer Loyalty Platform is designed to demonstrate how to modernize legacy
 
 2. **Install dependencies**
    ```bash
-   npm install
+   npm install --legacy-peer-deps
    ```
 
-3. **Start the development server**
+3. **Configure API endpoint (optional)**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local to set VITE_API_URL to your backend URL
+   ```
+
+4. **Start the development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:5173` (or the port shown in your terminal)
+
+### Backend API Setup
+
+The application includes a Node.js backend API that connects to a SQL database for real-time KPI data.
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
+
+2. **Install backend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials
+   ```
+
+4. **Initialize the database**
+   
+   For PostgreSQL:
+   ```bash
+   psql -U postgres -d loyalty_platform -f database/schema.sql
+   ```
+   
+   For Azure SQL:
+   ```bash
+   sqlcmd -S your-server.database.windows.net -d loyalty_platform -U sqladmin -i database/schema-mssql.sql
+   ```
+
+5. **Start the backend server**
+   ```bash
+   npm run dev
+   ```
+
+   The API will be available at `http://localhost:3000`
+
+For detailed backend deployment instructions, see [backend/README.md](backend/README.md).
 
 ## 🚀 Available Scripts
 
@@ -98,13 +155,106 @@ The Customer Loyalty Platform is designed to demonstrate how to modernize legacy
 
 ```
 customer-loyalty-pla/
+├── backend/                # Backend API (NEW)
+│   ├── src/
+│   │   ├── config/        # Configuration files
+│   │   ├── controllers/   # API controllers
+│   │   ├── routes/        # API routes
+│   │   ├── services/      # Business logic & DB service
+│   │   ├── types/         # TypeScript types
+│   │   └── index.ts       # Application entry point
+│   ├── database/          # Database schemas
+│   ├── Dockerfile         # Docker configuration
+│   └── package.json       # Backend dependencies
+├── k8s/                   # Kubernetes manifests (NEW)
+│   ├── deployment.yaml    # K8s deployment config
+│   ├── service.yaml       # K8s service config
+│   ├── configmap.yaml     # Configuration
+│   ├── secret.yaml        # Secrets
+│   └── hpa.yaml           # Horizontal Pod Autoscaler
 ├── src/
 │   ├── components/        # React components
 │   │   ├── ui/           # Reusable UI components
 │   │   ├── ArchitectureView.tsx
 │   │   ├── AIAgentsView.tsx
 │   │   ├── MigrationView.tsx
-│   │   └── DemoView.tsx
+│   │   ├── DemoView.tsx
+│   │   └── DashboardOverview.tsx
+│   ├── services/          # API service layer (NEW)
+│   ├── lib/              # Utility functions and data
+│   ├── hooks/            # Custom React hooks
+│   ├── assets/           # Static assets (images, icons)
+│   ├── styles/           # Global styles
+│   ├── App.tsx           # Main application component
+│   └── main.tsx          # Application entry point
+├── public/               # Public static files
+├── index.html            # HTML template
+├── package.json          # Project dependencies
+├── vite.config.ts        # Vite configuration
+├── tailwind.config.js    # Tailwind CSS configuration
+├── tsconfig.json         # TypeScript configuration
+└── README.md             # Project documentation
+```
+
+## 🏗️ Deployment Architecture
+
+The application is designed for deployment on Azure Kubernetes Service (AKS):
+
+```
+┌─────────────────────────────────────────┐
+│         Azure Front Door / CDN          │
+│         (Static Web App - Frontend)     │
+└──────────────────┬──────────────────────┘
+                   │
+        ┌──────────▼──────────┐
+        │   Load Balancer     │
+        │    (K8s Service)    │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │         HPA         │
+        │   (Auto-scaling)    │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │    AKS Cluster      │
+        │   (Backend Pods)    │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │   Azure SQL or      │
+        │   PostgreSQL DB     │
+        └─────────────────────┘
+```
+
+### Key Features:
+- **Scalability**: HPA automatically scales pods based on CPU/memory usage (2-10 replicas)
+- **High Availability**: Multiple pod replicas with load balancing
+- **Database Support**: Works with PostgreSQL or Azure SQL
+- **Containerization**: Docker containers for consistent deployments
+- **Health Checks**: Liveness and readiness probes for reliability
+- **Configuration Management**: ConfigMaps and Secrets for secure configuration
+│   │   ├── services/      # Business logic & DB service
+│   │   ├── types/         # TypeScript types
+│   │   └── index.ts       # Application entry point
+│   ├── database/          # Database schemas
+│   ├── Dockerfile         # Docker configuration
+│   └── package.json       # Backend dependencies
+├── k8s/                   # Kubernetes manifests (NEW)
+│   ├── deployment.yaml    # K8s deployment config
+│   ├── service.yaml       # K8s service config
+│   ├── configmap.yaml     # Configuration
+│   ├── secret.yaml        # Secrets
+│   └── hpa.yaml           # Horizontal Pod Autoscaler
+├── src/
+│   ├── components/        # React components
+│   │   ├── ui/           # Reusable UI components
+│   │   ├── ArchitectureView.tsx
+│   │   ├── AIAgentsView.tsx
+│   │   ├── MigrationView.tsx
+│   │   ├── DemoView.tsx
+│   │   └── DashboardOverview.tsx
+│   ├── services/          # API service layer (NEW)
 │   ├── lib/              # Utility functions and data
 │   ├── hooks/            # Custom React hooks
 │   ├── assets/           # Static assets (images, icons)
