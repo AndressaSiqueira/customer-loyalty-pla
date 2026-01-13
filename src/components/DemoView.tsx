@@ -1,19 +1,19 @@
 import { useState } from 'react'
-import { Textarea } from '@/components/ui/texta
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Sparkle, PaperPlaneTilt, Lightbulb } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
+type Agent = 'campaign-designer' | 'support-operations'
+
 interface Message {
-
+  id: string
+  role: 'user' | 'agent'
+  content: string
   timestamp: Date
-
-  const [selectedAgent, 
-  const [messages
-
- 
+}
 
 export default function DemoView() {
   const [selectedAgent, setSelectedAgent] = useState<Agent>('campaign-designer')
@@ -32,40 +32,38 @@ export default function DemoView() {
         'Create a win-back campaign for customers who churned in the last 90 days',
         'Which product categories are trending up this week vs last week?',
         'Forecast the impact of a 15% discount on premium member reactivation'
-       
+      ]
+    },
+    'support-operations': {
+      name: 'Support Operations Agent',
+      persona: 'Support Manager',
+      color: 'var(--security)',
+      description: 'AI assistant for customer support optimization and issue resolution',
+      samplePrompts: [
+        'What are the top 5 support issues this week?',
+        'Show me customers with open tickets older than 48 hours',
+        'Analyze sentiment trends in support conversations',
+        'Recommend proactive outreach for at-risk accounts'
+      ]
     }
+  }
 
+  const handleSendPrompt = async () => {
     if (!prompt.trim()) {
       return
+    }
 
+    const userMessage: Message = {
       id: Date.now().toString(),
+      role: 'user',
       content: prompt,
+      timestamp: new Date()
     }
     setMessages(prev => [...prev, userMessage])
+    setPrompt('')
     setIsLoading(true)
+
     try {
-
-
-
-
-
-        id: (Date.now() +
-        content: response,
-      }
-     
-
-    } finally {
-    }
-
-    setPrompt(samplePr
-
-    s
-
-  const currentAgent = agentConfig[selectedAgen
-  return (
-      <div className="
-
-         
       const agentPrompt = spark.llmPrompt`You are the ${agentConfig[selectedAgent].name}, an AI assistant for the Neo Contoso Customer Loyalty Platform.
 
 Your role: ${agentConfig[selectedAgent].description}
@@ -205,7 +203,7 @@ Provide a helpful, specific response that demonstrates how you would help with t
                         key={idx}
                         onClick={() => handleUseSample(sample)}
                         className="block w-full text-left p-2 rounded bg-card hover:bg-accent/10 border border-border text-xs italic transition-colors"
-              <p classN
+                      >
                         "{sample}"
                       </button>
                     ))}
@@ -215,75 +213,61 @@ Provide a helpful, specific response that demonstrates how you would help with t
             ) : (
               messages.map((message) => (
                 <div
-            </div>
+                  key={message.id}
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-      </Card>
+                >
                   <div
-        <CardHeader>
+                    className={`max-w-[80%] rounded-lg p-3 ${
                       message.role === 'user'
-        <CardContent>
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-card border border-border'
                     }`}
                   >
-          </p>
+                    <p className="text-xs font-semibold mb-1 opacity-80">
                       {message.role === 'user' ? 'You' : currentAgent.name}
-}
+                    </p>
                     <div className="text-sm whitespace-pre-wrap">{message.content}</div>
                   </div>
-
+                </div>
               ))
             )}
           </div>
 
           <div className="space-y-2">
-
-
+            <Textarea
+              value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
                   handleSendPrompt()
-
+                }
               }}
               placeholder={`Ask ${currentAgent.name} anything...`}
-
+              className="min-h-[80px]"
               disabled={isLoading}
-
+            />
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
                 Press Enter to send, Shift+Enter for new line
-
+              </p>
               <Button onClick={handleSendPrompt} disabled={isLoading || !prompt.trim()}>
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-2" />
                     Thinking...
-
-                ) : (
-
-                    <PaperPlaneTilt className="w-4 h-4 mr-2" weight="fill" />
-
                   </>
-
+                ) : (
+                  <>
+                    <PaperPlaneTilt className="w-4 h-4 mr-2" weight="fill" />
+                    Send
+                  </>
+                )}
               </Button>
-
+            </div>
           </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
