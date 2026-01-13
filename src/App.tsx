@@ -6,7 +6,7 @@ import AIAgentsView from '@/components/AIAgentsView'
 import MigrationView from '@/components/MigrationView'
 import DemoView from '@/components/DemoView'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import logoImage from '@/assets/images/image_(5).png'
+import logoImage from '@/assets/images/logo.png'
 
 function App() {
   const [activeTab, setActiveTab] = useState('architecture')
