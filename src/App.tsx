@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CloudArrowUp, Robot, ChartBar, Cube } from '@phosphor-icons/react'
+import { CloudArrowUp, Robot, PlayCircle, Cube } from '@phosphor-icons/react'
 import ArchitectureView from '@/components/ArchitectureView'
 import AIAgentsView from '@/components/AIAgentsView'
 import MigrationView from '@/components/MigrationView'
-import MetricsView from '@/components/MetricsView'
+import DemoView from '@/components/DemoView'
 
 function App() {
   const [activeTab, setActiveTab] = useState('architecture')
@@ -55,11 +55,11 @@ function App() {
               Migration Strategy
             </TabsTrigger>
             <TabsTrigger 
-              value="metrics" 
+              value="demo" 
               className="flex items-center gap-2 py-3 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
-              <ChartBar className="w-4 h-4" />
-              Business Metrics
+              <PlayCircle className="w-4 h-4" />
+              Demo
             </TabsTrigger>
           </TabsList>
 
@@ -75,8 +75,8 @@ function App() {
             <MigrationView />
           </TabsContent>
 
-          <TabsContent value="metrics" className="mt-0">
-            <MetricsView />
+          <TabsContent value="demo" className="mt-0">
+            <DemoView />
           </TabsContent>
         </Tabs>
       </main>
