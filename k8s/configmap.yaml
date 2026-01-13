@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loyalty-api-config
+  namespace: default
+data:
+  PORT: "3000"
+  CORS_ORIGIN: "*"
+  DB_TYPE: "postgres"
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "loyalty_platform"
+  DB_SSL: "false"
