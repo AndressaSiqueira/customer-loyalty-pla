@@ -121,9 +121,14 @@ export default function DashboardOverview({ onRecommendationClick }: DashboardOv
     }
   }
 
-  const extractPrompt = (description: string) => {
-    const match = description.match(/"([^"]+)"/)
-    return match ? match[1] : ''
+  const extractPrompt = (description: string): string => {
+    // Extract text between quotes, handling both single and double quotes
+    const match = description.match(/["']([^"']+)["']/)
+    if (match && match[1]) {
+      return match[1].trim()
+    }
+    // Fallback: return empty string if pattern not found
+    return ''
   }
 
   return (

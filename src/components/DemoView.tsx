@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -50,6 +50,7 @@ export default function DemoView() {
   const [messages, setMessages] = useState<Message[]>([])
   const [prompt, setPrompt] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const chatAreaRef = useRef<HTMLDivElement>(null)
 
   const currentAgent = agentConfig[selectedAgent]
 
@@ -106,9 +107,8 @@ Provide a helpful, specific response that demonstrates how you would help with t
     setPrompt(prompt)
     // Scroll to the chat area
     setTimeout(() => {
-      const chatArea = document.querySelector('[data-chat-area]')
-      if (chatArea) {
-        chatArea.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      if (chatAreaRef.current) {
+        chatAreaRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     }, 100)
   }
@@ -182,7 +182,7 @@ Provide a helpful, specific response that demonstrates how you would help with t
         </Card>
       </div>
 
-      <Card className="border-2" data-chat-area>
+      <Card className="border-2" ref={chatAreaRef}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
