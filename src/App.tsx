@@ -5,6 +5,7 @@ import ArchitectureView from '@/components/ArchitectureView'
 import AIAgentsView from '@/components/AIAgentsView'
 import MigrationView from '@/components/MigrationView'
 import DemoView from '@/components/DemoView'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import logoImage from '@/assets/images/image_(5).png'
 
 function App() {
@@ -26,9 +27,12 @@ function App() {
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-sm font-semibold text-primary mb-1">Neo Contoso</div>
-              <div className="text-xs text-muted-foreground">Enterprise Transformation Initiative</div>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <div className="text-right">
+                <div className="text-sm font-semibold text-primary mb-1">Neo Contoso</div>
+                <div className="text-xs text-muted-foreground">Enterprise Transformation Initiative</div>
+              </div>
             </div>
           </div>
         </div>
