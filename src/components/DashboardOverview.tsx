@@ -1,15 +1,18 @@
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { TrendUp, TrendDown, Users, Sparkle, ChartLine, Target, Lightbulb } from '@phosphor-icons/react'
+import { apiService, type KPIData, type OperationalHealth } from '@/services/api.service'
 
-const kpiData = [
+// Fallback data in case API is not available
+const fallbackKpiData: KPIData[] = [
   {
     id: 'active-members',
     label: 'Active Members',
     value: '847,293',
     change: '+12.4%',
-    trend: 'up' as const,
+    trend: 'up',
     target: '1M',
     progress: 85,
     color: 'var(--ai-agents)'
@@ -19,7 +22,7 @@ const kpiData = [
     label: 'Engagement Rate',
     value: '11.2%',
     change: '+3.2%',
-    trend: 'up' as const,
+    trend: 'up',
     target: '12%',
     progress: 93,
     color: 'var(--microservices)'
@@ -29,7 +32,7 @@ const kpiData = [
     label: 'Redemption Rate',
     value: '24.8%',
     change: '+5.1%',
-    trend: 'up' as const,
+    trend: 'up',
     target: '30%',
     progress: 83,
     color: 'var(--data-platform)'
@@ -39,37 +42,37 @@ const kpiData = [
     label: 'Avg Transaction',
     value: '$127.50',
     change: '-2.3%',
-    trend: 'down' as const,
+    trend: 'down',
     target: '$135',
     progress: 94,
     color: 'var(--security)'
   }
 ]
 
-const operationalHealth = [
+const fallbackOperationalHealth: OperationalHealth[] = [
   {
     id: 'system-uptime',
     label: 'System Uptime',
     status: '99.94%',
-    health: 'excellent' as const
+    health: 'excellent'
   },
   {
     id: 'api-latency',
     label: 'API Latency',
     status: '142ms',
-    health: 'good' as const
+    health: 'good'
   },
   {
     id: 'active-campaigns',
     label: 'Active Campaigns',
     status: '23',
-    health: 'excellent' as const
+    health: 'excellent'
   },
   {
     id: 'support-tickets',
     label: 'Open Tickets',
     status: '47',
-    health: 'good' as const
+    health: 'good'
   }
 ]
 
@@ -102,6 +105,49 @@ interface DashboardOverviewProps {
 }
 
 export default function DashboardOverview({ onRecommendationClick }: DashboardOverviewProps) {
+  const [kpiData, setKpiData] = useState<KPIData[]>(fallbackKpiData)
+  const [operationalHealth, setOperationalHealth] = useState<OperationalHealth[]>(fallbackOperationalHealth)
+  const [isLoading, setIsLoading] = useState(true)
+  const [useApi, setUseApi] = useState(true)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true)
+        const response = await apiService.getDashboardData()
+        
+        if (response.success && response.data) {
+          setKpiData(response.data.kpis)
+          setOperationalHealth(response.data.operationalHealth)
+          setUseApi(true)
+        } else {
+          console.warn('API not available, using fallback data')
+          setKpiData(fallbackKpiData)
+          setOperationalHealth(fallbackOperationalHealth)
+          setUseApi(false)
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+        setKpiData(fallbackKpiData)
+        setOperationalHealth(fallbackOperationalHealth)
+        setUseApi(false)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+    
+    // Refresh data every 30 seconds if using API
+    const interval = setInterval(() => {
+      if (useApi) {
+        fetchDashboardData()
+      }
+    }, 30000)
+
+    return () => clearInterval(interval)
+  }, [useApi])
+
   const getHealthColor = (health: string) => {
     switch (health) {
       case 'excellent': return 'text-green-600 bg-green-100'
@@ -138,9 +184,15 @@ export default function DashboardOverview({ onRecommendationClick }: DashboardOv
         <h3 className="text-xl font-semibold mb-2 flex items-center justify-center gap-2">
           <ChartLine className="w-5 h-5 text-primary" weight="duotone" />
           Customer Loyalty Dashboard
+          {!useApi && (
+            <Badge variant="outline" className="text-xs ml-2">
+              Demo Mode
+            </Badge>
+          )}
         </h3>
         <p className="text-sm text-muted-foreground">
           Real-time overview of loyalty program performance and operational health
+          {isLoading && ' • Loading...'}
         </p>
       </div>
 
