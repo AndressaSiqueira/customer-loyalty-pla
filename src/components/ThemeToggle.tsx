@@ -21,11 +21,19 @@ export function ThemeToggle() {
     )
   }
 
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light")
+    } else {
+      setTheme("dark")
+    }
+  }
+
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
       className="relative"
     >
       <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
