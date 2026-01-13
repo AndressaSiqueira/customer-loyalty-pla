@@ -5,6 +5,7 @@ import ArchitectureView from '@/components/ArchitectureView'
 import AIAgentsView from '@/components/AIAgentsView'
 import MigrationView from '@/components/MigrationView'
 import DemoView from '@/components/DemoView'
+import logoImage from '@/assets/images/image_(5).png'
 
 function App() {
   const [activeTab, setActiveTab] = useState('architecture')
@@ -14,13 +15,16 @@ function App() {
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">
-                Customer Loyalty Platform
-              </h1>
-              <p className="text-muted-foreground text-base">
-                Azure Architecture & AI-First Modernization Strategy
-              </p>
+            <div className="flex items-center gap-4">
+              <img src={logoImage} alt="Logo" className="h-12 w-auto object-contain" />
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">
+                  Customer Loyalty Platform
+                </h1>
+                <p className="text-muted-foreground text-base">
+                  Azure Architecture & AI-First Modernization Strategy
+                </p>
+              </div>
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-primary mb-1">Neo Contoso</div>
