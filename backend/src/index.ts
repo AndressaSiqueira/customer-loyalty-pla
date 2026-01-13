@@ -1,12 +1,20 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { config } from './config';
+import { config, validateConfig } from './config';
 import { databaseService } from './services/database.service';
 import routes from './routes';
 
 // Load environment variables
 dotenv.config();
+
+// Validate configuration
+try {
+  validateConfig();
+} catch (error) {
+  console.error('Configuration validation failed:', error);
+  process.exit(1);
+}
 
 const app: Application = express();
 

@@ -22,8 +22,8 @@ export const config = {
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432'),
       database: process.env.DB_NAME || 'loyalty_platform',
-      user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
+      user: process.env.DB_USER || '',
+      password: process.env.DB_PASSWORD || '',
       ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
     }
   },
@@ -33,3 +33,18 @@ export const config = {
     corsOrigin: process.env.CORS_ORIGIN || '*'
   }
 };
+
+// Validate required configuration
+export function validateConfig() {
+  const dbType = config.database.type;
+  
+  if (dbType === 'mssql') {
+    if (!config.database.mssql.server || !config.database.mssql.user || !config.database.mssql.password) {
+      throw new Error('Missing required Azure SQL configuration: DB_SERVER, DB_USER, and DB_PASSWORD must be set');
+    }
+  } else if (dbType === 'postgres') {
+    if (!config.database.postgres.user || !config.database.postgres.password) {
+      throw new Error('Missing required PostgreSQL configuration: DB_USER and DB_PASSWORD must be set');
+    }
+  }
+}

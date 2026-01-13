@@ -5,6 +5,8 @@ metadata:
   namespace: default
 data:
   PORT: "3000"
+  # IMPORTANT: In production, set CORS_ORIGIN to your frontend domain(s)
+  # Example: "https://your-frontend.azurestaticapps.net"
   CORS_ORIGIN: "*"
   DB_TYPE: "postgres"
   DB_HOST: "postgres-service"

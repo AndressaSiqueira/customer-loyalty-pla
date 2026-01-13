@@ -18,7 +18,7 @@ class DatabaseService {
         console.log('Azure SQL connection established');
       }
     } catch (error) {
-      console.error('Database initialization error:', error);
+      console.error(`Database initialization error (${config.database.type}):`, error);
       throw error;
     }
   }
