@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Sparkle, Lightbulb, Trash } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import DashboardOverview from '@/components/DashboardOverview'
 
 declare const spark: Window['spark']
 
@@ -100,15 +101,30 @@ Provide a helpful, specific response that demonstrates how you would help with t
     setMessages([])
   }
 
+  const handleRecommendationClick = (agent: Agent, prompt: string) => {
+    setSelectedAgent(agent)
+    setPrompt(prompt)
+    // Scroll to the chat area
+    setTimeout(() => {
+      const chatArea = document.querySelector('[data-chat-area]')
+      if (chatArea) {
+        chatArea.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 100)
+  }
+
   return (
     <div className="space-y-8">
-      <div className="text-center max-w-3xl mx-auto mb-12">
+      <div className="text-center max-w-3xl mx-auto mb-8">
         <h2 className="text-2xl font-semibold mb-3">Interactive AI Agent Demo</h2>
         <p className="text-muted-foreground text-base leading-relaxed">
           Experience how AI agents transform platform interactions. Select an agent below and try natural language queries 
           to see how they can help your team make data-driven decisions.
         </p>
       </div>
+
+      {/* Dashboard Overview */}
+      <DashboardOverview onRecommendationClick={handleRecommendationClick} />
 
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <Card
@@ -166,7 +182,7 @@ Provide a helpful, specific response that demonstrates how you would help with t
         </Card>
       </div>
 
-      <Card className="border-2">
+      <Card className="border-2" data-chat-area>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
