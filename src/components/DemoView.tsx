@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Sparkle, Lightbulb, Trash } from '@phospho
+import { Textarea } from '@/components/ui/textarea'
+import { Sparkle, Lightbulb, Trash } from '@phosphor-icons/react'
+import { toast } from 'sonner'
 
-
+declare const spark: Window['spark']
 
 type Agent = 'campaign-designer' | 'support-operations'
 
@@ -32,41 +34,39 @@ const agentConfig = {
     name: 'Support Operations Agent',
     persona: 'Support Manager',
     color: 'var(--security)',
+    description: 'Automated triage and operational health monitoring for support teams',
+    samplePrompts: [
+      'Why hasn\'t customer ID 12345\'s recent purchase been credited?',
+      'Show me all critical errors in the loyalty service from the past hour',
+      'Is the current API latency spike within normal range?',
+      'What are the top 3 support issues reported today?'
     ]
+  }
 }
+
 export default function DemoView() {
+  const [selectedAgent, setSelectedAgent] = useState<Agent>('campaign-designer')
   const [messages, setMessages] = useState<Message[]>([])
+  const [prompt, setPrompt] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
   const currentAgent = agentConfig[selectedAgent]
-  con
-   
 
+  const handleSendPrompt = async () => {
+    if (!prompt.trim() || isLoading) return
 
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
       content: prompt.trim(),
+      timestamp: new Date()
     }
+    
     setMessages(prev => [...prev, userMessage])
+    setPrompt('')
     setIsLoading(true)
+
     try {
-
-
-
-
-
-        id: 
-     
-
-      setMessages(prev => [...prev
-      toast.error('Failed to get
-      setIsLoading(
-  }
-  const handleUseSample = (
-  }
-
-  }
-  return (
-      <div className="
-
-         
       const agentPrompt = spark.llmPrompt`You are the ${agentConfig[selectedAgent].name}, an AI assistant for the Neo Contoso Customer Loyalty Platform.
 
 Your role: ${agentConfig[selectedAgent].description}
@@ -134,145 +134,145 @@ Provide a helpful, specific response that demonstrates how you would help with t
             <CardTitle className="text-base">{agentConfig['campaign-designer'].name}</CardTitle>
             <CardDescription className="text-xs">
               {agentConfig['campaign-designer'].description}
-              </div>
-                <CardTi
-              <
+            </CardDescription>
+          </CardHeader>
+        </Card>
 
-              
-                onClick={handleClearChat}
-                <Trash className="w-4 h-4" />
-            )}
-        </CardHeader>
         <Card
-            {messages.length === 0 ? (
+          className={`cursor-pointer transition-all duration-200 border-2 ${
+            selectedAgent === 'support-operations' 
+              ? 'border-[var(--security)] bg-[var(--security)]/10 shadow-lg' 
+              : 'border-border hover:border-[var(--security)]/50'
+          }`}
+          onClick={() => setSelectedAgent('support-operations')}
         >
+          <CardHeader>
+            <div className="flex items-center justify-between mb-2">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: agentConfig['support-operations'].color }}
+              >
+                <Lightbulb className="w-5 h-5 text-white" weight="duotone" />
+              </div>
+              <Badge variant={selectedAgent === 'support-operations' ? 'default' : 'outline'}>
+                {agentConfig['support-operations'].persona}
+              </Badge>
+            </div>
+            <CardTitle className="text-base">{agentConfig['support-operations'].name}</CardTitle>
+            <CardDescription className="text-xs">
+              {agentConfig['support-operations'].description}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+
+      <Card className="border-2">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg">{currentAgent.name}</CardTitle>
+              <CardDescription className="text-xs">Ask questions using natural language</CardDescription>
+            </div>
+            {messages.length > 0 && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleClearChat}
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto space-y-4 p-4 rounded-lg bg-muted/30">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full py-12">
+                <div 
+                  className="w-16 h-16 rounded-xl flex items-center justify-center mb-4"
+                  style={{ backgroundColor: currentAgent.color }}
+                >
+                  <Sparkle className="w-8 h-8 text-white" weight="duotone" />
                 </div>
+                <h3 className="font-semibold text-base mb-2">Try these sample queries</h3>
                 <div className="space-y-2 max-w-md mx-auto">
-                   
+                  {currentAgent.samplePrompts.map((sample, idx) => (
+                    <button
+                      key={idx}
+                      className="w-full text-left p-3 rounded-lg bg-card border border-border hover:border-primary hover:shadow-md transition-all text-sm"
                       onClick={() => handleUseSample(sample)}
                     >
-               
+                      {sample}
+                    </button>
+                  ))}
                 </div>
               </div>
-                <div
-                  className={`flex ${message.role === 'user
-                  <div
-            </div>
-                        : 'bg-card border border-border'
-                  >
-                      {message.role === 'user' ? 'You' : curr
-                    <p classNa
-                </div>
-            )}
-
-
-              onChange={(e) => setPrompt(e.targe
-        <CardHeader>
-                  handleSendPrompt()
-              }}
-              disab
-            />
-              <p className="text-xs text-muted-foreground">
-              >
-                onClick={handleSendPrompt} 
-                size
-                {is
-                    <span className="animate-pulse">Thinking...</span>
-                ) : (
-                    
-                )}
-            </div>
-        </CardContent>
-    </div>
-}
-                onClick={handleClearChat}
-
-                <Trash className="w-4 h-4" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    >
-
-                    </button>
-
-                </div>
-
             ) : (
-
+              messages.map((message) => (
                 <div
-
-
-
-
-
-
-
-
-
-
-
+                  key={message.id}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-lg p-4 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-card border border-border'
+                    }`}
+                  >
+                    <div className="font-semibold text-xs mb-2">
                       {message.role === 'user' ? 'You' : currentAgent.persona}
-
-
-
+                    </div>
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  </div>
                 </div>
-
+              ))
             )}
-
-
-
-            <Textarea
-
-
-
-
-
-                  handleSendPrompt()
-
-              }}
-
-              disabled={isLoading}
-
-            />
-
-
-
-              </p>
-
-
-
-                size="sm"
-
-                {isLoading ? (
-
-
-
-
-
-
-                  </>
-
-              </Button>
-
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="max-w-[80%] rounded-lg p-4 bg-card border border-border">
+                  <div className="font-semibold text-xs mb-2">{currentAgent.persona}</div>
+                  <p className="text-sm text-muted-foreground animate-pulse">Thinking...</p>
+                </div>
+              </div>
+            )}
           </div>
 
+          <div className="space-y-3">
+            <Textarea
+              placeholder={`Ask ${currentAgent.name} anything...`}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSendPrompt()
+                }
+              }}
+              disabled={isLoading}
+              rows={3}
+            />
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Press Enter to send, Shift+Enter for new line
+              </p>
+              <Button 
+                onClick={handleSendPrompt} 
+                disabled={!prompt.trim() || isLoading}
+                size="sm"
+              >
+                {isLoading ? (
+                  <>
+                    <span className="animate-pulse">Thinking...</span>
+                  </>
+                ) : (
+                  'Send'
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
       </Card>
-
+    </div>
   )
-
+}
