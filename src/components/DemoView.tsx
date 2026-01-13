@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Sparkle, Lightbulb, Trash } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import DashboardOverview from '@/components/DashboardOverview'
 
 declare const spark: Window['spark']
 
@@ -49,6 +50,7 @@ export default function DemoView() {
   const [messages, setMessages] = useState<Message[]>([])
   const [prompt, setPrompt] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const chatAreaRef = useRef<HTMLDivElement>(null)
 
   const currentAgent = agentConfig[selectedAgent]
 
@@ -100,15 +102,29 @@ Provide a helpful, specific response that demonstrates how you would help with t
     setMessages([])
   }
 
+  const handleRecommendationClick = (agent: Agent, prompt: string) => {
+    setSelectedAgent(agent)
+    setPrompt(prompt)
+    // Scroll to the chat area
+    setTimeout(() => {
+      if (chatAreaRef.current) {
+        chatAreaRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 100)
+  }
+
   return (
     <div className="space-y-8">
-      <div className="text-center max-w-3xl mx-auto mb-12">
+      <div className="text-center max-w-3xl mx-auto mb-8">
         <h2 className="text-2xl font-semibold mb-3">Interactive AI Agent Demo</h2>
         <p className="text-muted-foreground text-base leading-relaxed">
           Experience how AI agents transform platform interactions. Select an agent below and try natural language queries 
           to see how they can help your team make data-driven decisions.
         </p>
       </div>
+
+      {/* Dashboard Overview */}
+      <DashboardOverview onRecommendationClick={handleRecommendationClick} />
 
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <Card
@@ -166,7 +182,7 @@ Provide a helpful, specific response that demonstrates how you would help with t
         </Card>
       </div>
 
-      <Card className="border-2">
+      <Card className="border-2" ref={chatAreaRef}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
